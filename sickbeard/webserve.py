@@ -48,6 +48,7 @@ from sickbeard.scene_numbering import get_scene_numbering, set_scene_numbering, 
 from sickbeard.webapi import function_mapper
 
 from sickbeard.imdbPopular import imdb_popular
+from sickbeard.imdbWatchlist import imdb_watchlist
 
 from dateutil import tz
 from unrar2 import RarFile
@@ -2605,7 +2606,7 @@ class HomeAddShows(Home):
         e = None
 
         try:
-            popular_shows = imdb_popular.fetch_popular_shows()
+            popular_shows = imdb_watchlist.fetch_shows_from_watchlist()
         except Exception as e:
             # print traceback.format_exc()
             popular_shows = None
@@ -2614,7 +2615,61 @@ class HomeAddShows(Home):
                         popular_shows=popular_shows, imdb_exception=e,
                         topmenu="home",
                         controller="addShows", action="popularShows")
+    
+    def imdbWatchlist(self, listid=None):
+        """
+        Fetches data from IMDB to show a list of popular shows.
+        """
+        t = PageTemplate(rh=self, filename="addShows_imdbShows.mako")
 
+        e = None
+        imdb_shows = None
+
+        # let's get all the available lists
+        imdb_lists = {}
+        
+        # Get the configured imdb watchlist urls
+        watchlists = sickbeard.IMDB_WL_USE_IDS.strip().split('|') if 'ur' in sickbeard.IMDB_WL_USE_IDS else None
+        
+        # We're only intrested in enabled watchlists
+        watchlists_enabled = sickbeard.IMDB_WL_IDS_ENABLED.strip().split('|') if sickbeard.IMDB_WL_IDS_ENABLED in ('0','1') else None
+        
+        # If a watchlist has been configured, add it to the select list
+        if watchlists and len(watchlists) == len(watchlists_enabled):
+            # Start looping through the imdb watchlist urls
+            for index, watchlist in enumerate(watchlists):
+                if not int(watchlists_enabled[index]):
+                    continue
+                
+                # Extract the userid
+                re_user_id = re.compile(".*(ur[0-9]+)")
+                user_id_match = re_user_id.match(watchlist)
+                if user_id_match:
+                    user_id = user_id_match.group(1)
+                    
+                    # Get all listid's for this user and save it in the dict
+                    imdb_lists[user_id] = imdb_watchlist.get_lists_from_user(user_id)
+
+        if listid:
+            # if listid=popular has been send, don't send a listid at all
+            try:
+                if listid not in "popular" and 'ls' not in listid:
+                    raise Exception('Did you provide a valid IMDB list?')
+                
+                #listids = imdb_watchlist.fetch_shows_from_watchlist(userid)
+                imdb_shows = imdb_watchlist.fetch_shows_from_watchlist(listid)
+                logger.log('Succesfully retrieved list of shows from IMDB using listid %s' % (listid), logger.DEBUG)
+            except Exception as e:
+                # print traceback.format_exc()
+                imdb_shows = None
+                
+
+        return t.render(title="IMDB Lists", header="IMDB Lists",
+                        imdb_shows=imdb_shows, imdb_exception=e,
+                        topmenu="home", imdb_lists=imdb_lists, enable_anime_options=False, 
+                        controller="addShows", action="imdbShows")
+        
+        
     def addShowToBlacklist(self, indexer_id):
         # URL parameters
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
@@ -3776,7 +3831,8 @@ class ConfigGeneral(Config):
                     calendar_unprotected=None, calendar_icons=None, debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None,
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
-                    git_reset=None, git_username=None, git_password=None, display_all_seasons=None):
+                    git_reset=None, git_username=None, git_password=None, display_all_seasons=None,
+                    use_imdb_watchlist=False, imdb_wl_ids_enabled='', imdb_wl_ids=''):
 
         results = []
 
@@ -3867,6 +3923,11 @@ class ConfigGeneral(Config):
         sickbeard.THEME_NAME = theme_name
 
         sickbeard.DEFAULT_PAGE = default_page
+        
+        # Save Custom Imdb Watchlists config
+        sickbeard.USE_IMDB_WATCHLIST = config.checkbox_to_value(use_imdb_watchlist)
+        sickbeard.IMDB_WL_IDS_ENABLED = imdb_wl_ids_enabled
+        sickbeard.IMDB_WL_USE_IDS = imdb_wl_ids
 
         sickbeard.save_config()
 
