@@ -517,10 +517,6 @@ span.show-option {
     line-height: 40px;
 }
 
-.show-grid {
-    display: none;
-}
-
 .poster-container {
     padding-right: 10px;
 }
@@ -537,13 +533,15 @@ span.show-option {
     background-image: url("../images/loading32.gif");
     width: 32px;
     height: 32px;
-    display: inline-block;
+    margin: 0 auto;
 }
 
 .show-container {
+    width: 188px;
     margin: 4px;
     background-color: #F3F3F3;
-    border: 5px solid #F3F3F3;
+    border: 6px solid #F3F3F3;
+    border-radius: 6px;
     overflow: hidden;
     box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.31);
 }
@@ -551,6 +549,10 @@ span.show-option {
 .show-details {
     height: 32px;
     overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .show-image {
@@ -674,16 +676,14 @@ span.show-option {
 
 .show-dlstats {
     font-size: 11px;
-    text-align: left;
-    display: block;
-    margin-left: 4px;
+    position: absolute;
+    left: 0;
 }
 
 .show-quality {
     font-size: 11px;
-    text-align: right;
-    display: block;
-    margin-right: 4px;
+    position:absolute;
+    right: 0;
 }
 
 #sort-by {
@@ -701,6 +701,28 @@ span.show-option {
 
 .posterview {
     margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.posterview-small .show-container {
+    border-width: 3px;
+    border-radius: 4px;
+}
+.posterview-small .show-details {
+    display: none;
+}
+.posterview-medium .show-container {
+    border-width: 4px;
+    border-radius: 5px;
+}
+.posterview-medium .show-dlstats,
+.posterview-medium .show-quality {
+    font-size: 9px;
+}
+.posterview-medium .show-network-image {
+    width: 40px;
 }
 
 td.tvShow a {

@@ -29,6 +29,18 @@ var configSuccess = function(){
     $('#prowl_show').trigger('notify');
 };
 
+var postListOptions = {
+        listClass: 'posterview',
+        valueNames: [
+            'show-title',
+            'show-date',
+            { attr: 'title', name: 'show-network' },
+            { attr: 'data-progress-percentage', name: 'progressbar' }
+        ]
+    },
+    posterList = new List('container', postListOptions),
+    posterListAnime = new List('container-anime', postListOptions);
+
 function metaToBool(pyVar){
     var meta = $('meta[data-var="' + pyVar + '"]').data('content');
     if(meta === undefined){
@@ -48,14 +60,14 @@ function isMeta(pyVar, result){
 var SICKRAGE = {
     common: {
         init: function() {
-            (function init() {
+            setTimeout(function init() {
                 var imgDefer = document.getElementsByTagName('img');
                 for (var i=0; i<imgDefer.length; i++) {
                     if(imgDefer[i].getAttribute('data-src')) {
-                        imgDefer[i].setAttribute('src',imgDefer[i].getAttribute('data-src'));
+                        imgDefer[i].setAttribute('src', imgDefer[i].getAttribute('data-src'));
                     }
                 }
-            })();
+            }, 10);
 
             $.confirm.options = {
                 confirmButton: "Yes",
@@ -1945,47 +1957,52 @@ var SICKRAGE = {
 
             // Handle filtering in the poster layout
             $('#filterShowName').on('input', _.debounce(function() {
-                $('.show-grid').isotope({
-                    filter: function () {
-                      var name = $(this).attr('data-name').toLowerCase();
-                      return name.indexOf($('#filterShowName').val().toLowerCase()) > -1;
-                    }
-                });
+                var searchString = $('#filterShowName').val();
+                console.log("Searching for: " + searchString);
+                if (posterList.size() > 0) { posterList.search(searchString, ['show-title']); }
+                if (posterListAnime.size() > 0)  { posterListAnime.search(searchString, ['show-title']); }
             }, 500));
 
             function resizePosters(newSize) {
-                var fontSize, logoWidth, borderRadius, borderWidth;
-                if (newSize < 125) { // small
-                    borderRadius = 3;
-                    borderWidth = 4;
-                } else if (newSize < 175) { // medium
-                    fontSize = 9;
-                    logoWidth = 40;
-                    borderRadius = 4;
-                    borderWidth = 5;
-                } else { // large
-                    fontSize = 11;
-                    logoWidth = 50;
-                    borderRadius = 6;
-                    borderWidth = 6;
-                }
 
                 // If there's a poster popup, remove it before resizing
                 $('#posterPopup').remove();
 
-                if (fontSize === undefined) {
-                    $('.show-details').hide();
-                } else {
-                    $('.show-details').show();
-                    $('.show-dlstats, .show-quality').css('fontSize', fontSize);
-                    $('.show-network-image').css('width', logoWidth);
-                }
+                // Build CSS to set poster-size.
+                var sizeCss = '<style id="posterSizeCss">';
+                sizeCss += '.show-container { min-height: ' + newSize + 'px; width: ' + newSize + 'px; } ';
+                sizeCss += '</style>';
 
-                $('.show-container').css({
-                    width: newSize,
-                    borderWidth: borderWidth,
-                    borderRadius: borderRadius
-                });
+                var $element = $("#posterSizeCss");
+                if ($element.length) {
+                    $element.replaceWith($(sizeCss));
+                } else {
+                    $(sizeCss).appendTo('head');
+                }
+                $('.posterview').toggleClass('posterview-small', newSize < 125)
+                    .toggleClass('posterview-medium', newSize >= 125 && newSize < 175);
+            }
+
+            function resortPosters() {
+                var sortType,
+                    direction = $("#postersortdirection").val() === "true" ? "asc" : "desc";
+                switch ($("#postersort").val()) {
+                    case 'date':
+                      sortType = 'show-date';
+                      break;
+                    case 'network':
+                      sortType = 'show-network';
+                      break;
+                    case 'progress':
+                      sortType = 'progressbar';
+                      break;
+                    case 'name': // jshint ignore:line
+                    default:
+                      sortType = 'show-title';
+                      break;
+                }
+                if (posterList.size() > 0) { posterList.sort(sortType, { order: direction }); }
+                if (posterListAnime.size() > 0) { posterListAnime.sort(sortType, { order: direction }); }
             }
 
             var posterSize;
@@ -1996,6 +2013,7 @@ var SICKRAGE = {
                 posterSize = 188;
             }
             resizePosters(posterSize);
+            resortPosters();
 
             $('#posterSizeSlider').slider({
                 min: 75,
@@ -2006,7 +2024,6 @@ var SICKRAGE = {
                         localStorage.setItem('posterSize', ui.value);
                     }
                     resizePosters(ui.value);
-                    $('.show-grid').isotope('layout');
                 }
             });
 
@@ -2015,21 +2032,22 @@ var SICKRAGE = {
             });
 
             // This needs to be refined to work a little faster.
-            $('.progressbar').each(function(){
-                var percentage = $(this).data('progress-percentage');
-                var classToAdd = percentage === 100 ? 100 : percentage > 80 ? 80 : percentage > 60 ? 60 : percentage > 40 ? 40 : 20;
-                $(this).progressbar({ value:  percentage });
-                if($(this).data('progress-text')) {
-                    $(this).append('<div class="progressbarText" title="' + $(this).data('progress-tip') + '">' + $(this).data('progress-text') + '</div>');
-                }
-                $(this).find('.ui-progressbar-value').addClass('progress-' + classToAdd);
-            });
+            // $('.progressbar').each(function(){
+            //     var percentage = $(this).data('progress-percentage');
+            //     var classToAdd = percentage === 100 ? 100 : percentage > 80 ? 80 : percentage > 60 ? 60 : percentage > 40 ? 40 : 20;
+            //     $(this).progressbar({ value:  percentage });
+            //     if($(this).data('progress-text')) {
+            //         $(this).append('<div class="progressbarText" title="' + $(this).data('progress-tip') + '">' + $(this).data('progress-text') + '</div>');
+            //     }
+            //     $(this).find('.ui-progressbar-value').addClass('progress-' + classToAdd);
+            // });
 
             $("img#network").on('error', function(){
                 $(this).parent().text($(this).attr('alt'));
                 $(this).remove();
             });
 
+            // TODO monstrous selector is slow. Refine to make faster.
             $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
                 sortList: [[7,1],[2,0]],
                 textExtraction: {
@@ -2118,6 +2136,7 @@ var SICKRAGE = {
 
             $('.show-grid').imagesLoaded(function () {
                 $('.loading-spinner').hide();
+/*
                 $('.show-grid').show().isotope({
                     itemSelector: '.show-container',
                     sortBy : getMeta('sickbeard.POSTER_SORTBY'),
@@ -2142,6 +2161,7 @@ var SICKRAGE = {
                         }
                     }
                 });
+*/
 
                 // When posters are small enough to not display the .show-details
                 // table, display a larger poster when hovering.
@@ -2165,7 +2185,7 @@ var SICKRAGE = {
                             top: origTop,
                             left: origLeft
                         });
-                        popup.find('.show-details').show();
+                        // popup.find('.show-details').css('display', '');
                         popup.on('mouseleave', function () {
                             $(this).remove();
                         });
@@ -2202,12 +2222,12 @@ var SICKRAGE = {
             });
 
             $('#postersort').on('change', function(){
-                $('.show-grid').isotope({sortBy: $(this).val()});
+                resortPosters();
                 $.get($(this).find('option[value=' + $(this).val() +']').attr('data-sort'));
             });
 
             $('#postersortdirection').on('change', function(){
-                $('.show-grid').isotope({sortAscending: ($(this).val() === 'true')});
+                resortPosters();
                 $.get($(this).find('option[value=' + $(this).val() +']').attr('data-sort'));
             });
 
@@ -3026,7 +3046,7 @@ var SICKRAGE = {
                             /* randomise, else the rating_votes can already
                              * have sorted leaving this with nothing to do.
                              */
-                            $('#container').isotope({sortBy: 'random'});
+                            //$('#container').isotope({sortBy: 'random'});
                             sortCriteria = 'rating';
                             break;
                         case 'rating_votes':
@@ -3039,17 +3059,21 @@ var SICKRAGE = {
                             sortCriteria = 'name';
                             break;
                     }
+/*
                     $('#container').isotope({
                         sortBy: sortCriteria
                     });
+*/
                 });
 
                 $('#showsortdirection').on('change', function() {
+/*
                     $('#container').isotope({
                         sortAscending: ('asc' === this.value)
                     });
+*/
                 });
-
+/*
                 $('#container').isotope({
                     sortBy: 'original-order',
                     layoutMode: 'fitRows',
@@ -3062,6 +3086,7 @@ var SICKRAGE = {
                         votes: '[data-votes] parseInt',
                     }
                 });
+*/
             };
 
             $.fn.loadRemoteShows = function(path, loadingTxt, errorTxt) {

@@ -234,29 +234,17 @@
                                             </div>
 
                                             <div class="show-details">
-                                                <table class="show-details" width="100%" cellspacing="1" border="0" cellpadding="0">
-                                                    <tr>
-                                                        <td class="show-table">
-                                                            <span class="show-dlstats" title="${download_stat_tip}">${download_stat}</span>
-                                                        </td>
-
-                                                        <td class="show-table">
-                                                            % if sickbeard.HOME_LAYOUT != 'simple':
-                                                                % if curShow.network:
-                                                                    <span title="${curShow.network}"><img class="show-network-image" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></span>
-                                                                % else:
-                                                                    <span title="${_('No Network')}"><img class="show-network-image" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
-                                                                % endif
-                                                            % else:
-                                                                <span title="${curShow.network}">${curShow.network}</span>
-                                                            % endif
-                                                        </td>
-
-                                                        <td class="show-table">
-                                                            ${renderQualityPill(curShow.quality, showTitle=True, overrideClass="show-quality")}
-                                                        </td>
-                                                    </tr>
-                                                </table>
+                                                <div class="show-dlstats" title="${download_stat_tip}">${download_stat}</div>
+                                                % if sickbeard.HOME_LAYOUT != 'simple':
+                                                    % if curShow.network:
+                                                        <div title="${curShow.network}" class="show-network"><img class="show-network-image" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></div>
+                                                    % else:
+                                                        <div title="${_('No Network')}" class="show-network"><img class="show-network-image" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></div>
+                                                    % endif
+                                                % else:
+                                                    <div title="${curShow.network}" class="show-network">${curShow.network}</div>
+                                                % endif
+                                                ${renderQualityPill(curShow.quality, showTitle=True, overrideClass="show-quality")}
                                             </div>
                                         </div>
                                     % endfor
