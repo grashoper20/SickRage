@@ -24,6 +24,7 @@ module.exports = function(grunt) {
                     css: './dist/bower.css'
                 },
                 exclude: [
+                    'list.js'
                 ],
                 dependencies: {
                 },
@@ -41,8 +42,9 @@ module.exports = function(grunt) {
                     'bootstrap-formhelpers': [
                         'dist/js/bootstrap-formhelpers.min.js'
                     ],
-                    'isotope': [
-                        "dist/isotope.pkgd.min.js"
+                    'listjs': [
+                        "dist/list.min.js",
+                        "src/*.js"
                     ],
                     "outlayer": [
                         "item.js",
@@ -50,10 +52,21 @@ module.exports = function(grunt) {
                     ],
                     "openSans": [
                         "*.ttf", "*.css"
-                    ]
+                    ],
                 },
                 bowerOptions: {
                     relative: false
+                }
+            }
+        },
+        browserify: {
+            dist: {
+                files: {
+                    "dist/browserify.js": [
+                        "./bower_components/list.js/src/utils/*.js",
+                        "./bower_components/list.js/src/*.js",
+                        "./bower_components/list.js/index.js"
+                    ]
                 }
             }
         },
@@ -88,7 +101,7 @@ module.exports = function(grunt) {
         uglify: {
             bower: {
                 files: {
-                    '../gui/slick/js/vender.min.js': ['./dist/bower.js']
+                    '../gui/slick/js/vender.min.js': ['./dist/bower.js', 'dist/browserify.js' ]
                 }
             },
             core: {
@@ -152,11 +165,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha');
+    grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('default', [
         'clean',
         'bower',
         'bower_concat',
+        'browserify',
         'copy',
         'uglify',
         'sass',
