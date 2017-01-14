@@ -2048,7 +2048,7 @@ var SICKRAGE = {
             });
 
             // TODO monstrous selector is slow. Refine to make faster.
-            $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
+            $("#showListTableShows, #showListTableAnime").has("tbody tr").tablesorter({
                 sortList: [[7,1],[2,0]],
                 textExtraction: {
                     0: function(node) { return $(node).find('time').attr('datetime'); },
