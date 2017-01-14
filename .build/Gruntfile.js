@@ -168,6 +168,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('default', [
+        'jshint',
         'clean',
         'bower',
         'bower_concat',
