@@ -439,7 +439,7 @@ home.mako
     margin-bottom: 10px;
 }
 
-.ui-progressbar {
+.progressbar {
     height: 20px;
     line-height: 18px;
 }
@@ -533,7 +533,11 @@ span.show-option {
     background-image: url("../images/loading32.gif");
     width: 32px;
     height: 32px;
-    margin: 0 auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin: -16px 0 0 -16px;
+    z-index: 100;
 }
 
 .show-container {
@@ -560,7 +564,7 @@ span.show-option {
     max-width: 100%;
 }
 
-.show-container .ui-progressbar {
+.show-container .progressbar {
     height: 7px !important;
     top: -2px;
 }
