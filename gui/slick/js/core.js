@@ -60,14 +60,17 @@ function isMeta(pyVar, result){
 var SICKRAGE = {
     common: {
         init: function() {
-            setTimeout(function init() {
-                var imgDefer = document.getElementsByTagName('img');
-                for (var i=0; i<imgDefer.length; i++) {
-                    if(imgDefer[i].getAttribute('data-src')) {
-                        imgDefer[i].setAttribute('src', imgDefer[i].getAttribute('data-src'));
-                    }
-                }
-            }, 10);
+            // Use Deferred to spead up and async preloading.
+            var preloadPromises = [];
+            $("img[data-src]").each(function() {
+                var self = this;
+                preloadPromises.push(
+                    $.Deferred(function() {
+                        self.setAttribute('src',
+                            self.getAttribute('data-src'));
+                    })
+                );
+            });
 
             $.confirm.options = {
                 confirmButton: "Yes",
