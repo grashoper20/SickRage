@@ -2136,32 +2136,6 @@ var SICKRAGE = {
 
             $('.show-grid').imagesLoaded(function () {
                 $('.loading-spinner').hide();
-/*
-                $('.show-grid').show().isotope({
-                    itemSelector: '.show-container',
-                    sortBy : getMeta('sickbeard.POSTER_SORTBY'),
-                    sortAscending: getMeta('sickbeard.POSTER_SORTDIR'),
-                    layoutMode: 'masonry',
-                    masonry: {
-                        isFitWidth: true
-                    },
-                    getSortData: {
-                        name: function (itemElem) {
-                            var name = $(itemElem).attr('data-name') || '';
-                            return (metaToBool('sickbeard.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
-                        },
-                        network: '[data-network]',
-                        date: function (itemElem) {
-                            var date = $(itemElem).attr('data-date');
-                            return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
-                        },
-                        progress: function (itemElem) {
-                            var progress = $(itemElem).attr('data-progress');
-                            return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
-                        }
-                    }
-                });
-*/
 
                 // When posters are small enough to not display the .show-details
                 // table, display a larger poster when hovering.
