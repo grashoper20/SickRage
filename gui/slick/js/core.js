@@ -2032,15 +2032,19 @@ var SICKRAGE = {
             });
 
             // This needs to be refined to work a little faster.
-            // $('.progressbar').each(function(){
-            //     var percentage = $(this).data('progress-percentage');
-            //     var classToAdd = percentage === 100 ? 100 : percentage > 80 ? 80 : percentage > 60 ? 60 : percentage > 40 ? 40 : 20;
-            //     $(this).progressbar({ value:  percentage });
-            //     if($(this).data('progress-text')) {
-            //         $(this).append('<div class="progressbarText" title="' + $(this).data('progress-tip') + '">' + $(this).data('progress-text') + '</div>');
-            //     }
-            //     $(this).find('.ui-progressbar-value').addClass('progress-' + classToAdd);
-            // });
+            $('.progressbar').each(function() {
+                var $this = $(this),
+                    percentage = $this.data('progress-percentage'),
+                    classToAdd = Math.max((Math.floor(percentage / 20) * 20), 20);
+
+                $this
+                    .progressbar({ value:  percentage })
+                    .find('.ui-progressbar-value')
+                        .addClass('progress-' + classToAdd);
+                if ($this.data('progress-text')) {
+                    $this.append('<div class="progressbarText" title="' + $this.data('progress-tip') + '">' + $this.data('progress-text') + '</div>');
+                }
+            });
 
             $("img#network").on('error', function(){
                 $(this).parent().text($(this).attr('alt'));
