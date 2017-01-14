@@ -128,7 +128,7 @@
                                     % for curLoadingShow in sickbeard.showQueueScheduler.action.loadingShowList:
                                         % if curLoadingShow.show is None:
                                             <div class="show-container" data-name="0" data-date="010101" data-network="0" data-progress="101">
-                                                <img alt="" title="${curLoadingShow.show_name}" class="show-image" style="border-bottom: 1px solid #111;" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/images/poster.png" />
+                                                <img alt="" title="${curLoadingShow.show_name}" class="show-image" style="border-bottom: 1px solid #111;" src="${srRoot}/images/poster.png" data-src="${srRoot}/images/poster.png" />
                                                 <div class="show-details">
                                                     <div class="show-add">${_('Loading...')} (${curLoadingShow.show_name})</div>
                                                 </div>
@@ -199,7 +199,7 @@
                                         %>
                                         <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
                                             <div class="show-image">
-                                                <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" /></a>
+                                                <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srRoot}/images/blank.png" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" /></a>
                                             </div>
 
                                             <div class="progressbar hidden-print" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
@@ -237,9 +237,9 @@
                                                 <div class="show-dlstats" title="${download_stat_tip}">${download_stat}</div>
                                                 % if sickbeard.HOME_LAYOUT != 'simple':
                                                     % if curShow.network:
-                                                        <div title="${curShow.network}" class="show-network"><img class="show-network-image" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></div>
+                                                        <div title="${curShow.network}" class="show-network"><img class="show-network-image" src="${srRoot}/images/blank.png" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></div>
                                                     % else:
-                                                        <div title="${_('No Network')}" class="show-network"><img class="show-network-image" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></div>
+                                                        <div title="${_('No Network')}" class="show-network"><img class="show-network-image" src="${srRoot}/images/blank.png" data-src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></div>
                                                     % endif
                                                 % else:
                                                     <div title="${curShow.network}" class="show-network">${curShow.network}</div>
@@ -383,7 +383,7 @@
                                                     <td class="tvShow">
                                                         <div class="imgsmallposter ${sickbeard.HOME_LAYOUT}">
                                                             <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
-                                                                <img src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}"/>
+                                                                <img src="${srRoot}/images/blank.png" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}"/>
                                                             </a>
                                                             <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
                                                         </div>
@@ -393,7 +393,7 @@
                                                         <span style="display: none;">${curShow.name}</span>
                                                         <div class="imgbanner ${sickbeard.HOME_LAYOUT}">
                                                             <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">
-                                                                <img src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=banner" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}" title="${curShow.name}"/>
+                                                                <img src="${srRoot}/images/blank.png" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=banner" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}" title="${curShow.name}"/>
                                                             </a>
                                                         </div>
                                                     </td>
@@ -404,10 +404,10 @@
                                                 % if sickbeard.HOME_LAYOUT != 'simple':
                                                     <td align="center">
                                                         % if curShow.network:
-                                                            <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></span>
+                                                            <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}/images/blank.png" data-src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></span>
                                                             <span class="visible-print-inline">${curShow.network}</span>
                                                         % else:
-                                                            <span title="No Network" class="hidden-print"><img id="network" width="54" height="27" src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
+                                                            <span title="No Network" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}/images/blank.png" data-src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
                                                             <span class="visible-print-inline">${_('No Network')}</span>
                                                         % endif
                                                     </td>
@@ -430,7 +430,7 @@
 
                                                 <td align="center">
                                                     <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
-                                                    <img src="data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="${srRoot}/images/${('no16.png', 'yes16.png')[bool(paused)]}" alt="${('No', 'Yes')[bool(paused)]}" width="16" height="16" />
+                                                    <img src="${srRoot}/images/blank.png" data-src="${srRoot}/images/${('no16.png', 'yes16.png')[bool(paused)]}" alt="${('No', 'Yes')[bool(paused)]}" width="16" height="16" />
                                                 </td>
 
                                                 <td align="center">
