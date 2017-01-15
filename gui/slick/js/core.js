@@ -2143,6 +2143,7 @@ var SICKRAGE = {
 
             $('.show-grid').imagesLoaded(function () {
                 $('.loading-spinner').hide();
+                $('.show-grid').removeClass('show-grid');
 
                 // When posters are small enough to not display the .show-details
                 // table, display a larger poster when hovering.

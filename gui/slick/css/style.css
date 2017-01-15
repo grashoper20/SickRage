@@ -517,6 +517,10 @@ span.show-option {
     line-height: 40px;
 }
 
+.show-grid {
+    display: none;
+}
+
 .poster-container {
     padding-right: 10px;
 }
@@ -533,11 +537,7 @@ span.show-option {
     background-image: url("../images/loading32.gif");
     width: 32px;
     height: 32px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin: -16px 0 0 -16px;
-    z-index: 100;
+    margin: 0 auto;
 }
 
 .show-container {
