@@ -60,16 +60,14 @@ function isMeta(pyVar, result){
 var SICKRAGE = {
     common: {
         init: function() {
-            // Use Deferred to spead up and async preloading.
-            var preloadPromises = [];
-            $("img[data-src]").each(function() {
-                var self = this;
-                preloadPromises.push(
-                    $.Deferred(function() {
-                        self.setAttribute('src',
-                            self.getAttribute('data-src'));
-                    })
-                );
+            $("img[data-src]").each(function () {
+                var self = this,
+                    img = new Image(),
+                    s = this.getAttribute('data-src');
+                img.onload = function () {
+                    self.setAttribute('src', s);
+                };
+                img.src = s;
             });
 
             $.confirm.options = {
@@ -1972,22 +1970,20 @@ var SICKRAGE = {
                 $('#posterPopup').remove();
 
                 // Build CSS to set poster-size.
-                var sizeCss = '<style id="posterSizeCss">';
-                sizeCss += '.show-container { min-height: ' + newSize + 'px; width: ' + newSize + 'px; } ';
-                sizeCss += '</style>';
-
+                var sizeCss = '<style id="posterSizeCss">.show-container { min-height: ' + newSize + 'px; width: ' + newSize + 'px; }</style>';
                 var $element = $("#posterSizeCss");
                 if ($element.length) {
                     $element.replaceWith($(sizeCss));
                 } else {
                     $(sizeCss).appendTo('head');
                 }
-                $('.posterview').toggleClass('posterview-small', newSize < 125)
+                $('.posterview')
+                    .toggleClass('posterview-small', newSize < 125)
                     .toggleClass('posterview-medium', newSize >= 125 && newSize < 175);
             }
 
             function resortPosters() {
-                var sortType,
+                var sortType = 'show-title',
                     direction = $("#postersortdirection").val() === "true" ? "asc" : "desc";
                 switch ($("#postersort").val()) {
                     case 'date':
@@ -1998,10 +1994,6 @@ var SICKRAGE = {
                       break;
                     case 'progress':
                       sortType = 'progressbar';
-                      break;
-                    case 'name': // jshint ignore:line
-                    default:
-                      sortType = 'show-title';
                       break;
                 }
                 if (posterList.size() > 0) { posterList.sort(sortType, { order: direction }); }
@@ -2142,8 +2134,8 @@ var SICKRAGE = {
             });
 
             $('.show-grid').imagesLoaded(function () {
+                $(".show-grid").show();
                 $('.loading-spinner').hide();
-                $('.show-grid').removeClass('show-grid');
 
                 // When posters are small enough to not display the .show-details
                 // table, display a larger poster when hovering.
